@@ -19,6 +19,10 @@ func Config(path string) string {
 	return val
 }
 
+func HasConfig(path string) bool {
+	return config.Has(path)
+}
+
 func Main(collect func(), rate time.Duration) {
 	var args struct {
 		Config string `default:"/etc/home-metrics.toml"`

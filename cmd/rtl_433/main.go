@@ -21,8 +21,22 @@ var stateHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message
 	}
 
 	go func() {
-		homemetrics.SendCarbon([]string{"rtl_433", homemetrics.CleanLabel(device_id), homemetrics.CleanLabel(metric)}, value, time.Now())
+		homemetrics.SendCarbon([]string{
+			"rtl_433",
+			homemetrics.CleanLabel(device_id),
+			homemetrics.CleanLabel(metric),
+		}, value, time.Now())
 	}()
+
+	if homemetrics.HasConfig("rtl_433.id_map." + device_id) {
+		go func() {
+			homemetrics.SendCarbon([]string{
+				"rtl_433",
+				homemetrics.CleanLabel(homemetrics.Config("rtl_433.id_map." + device_id)),
+				homemetrics.CleanLabel(metric),
+			}, value, time.Now())
+		}()
+	}
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
