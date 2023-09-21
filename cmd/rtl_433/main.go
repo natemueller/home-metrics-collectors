@@ -20,14 +20,6 @@ var stateHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message
 		return
 	}
 
-	go func() {
-		homemetrics.SendCarbon([]string{
-			"rtl_433",
-			homemetrics.CleanLabel(device_id),
-			homemetrics.CleanLabel(metric),
-		}, value, time.Now())
-	}()
-
 	if homemetrics.HasConfig("rtl_433.id_map." + device_id) {
 		go func() {
 			homemetrics.SendCarbon([]string{
