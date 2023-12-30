@@ -39,18 +39,20 @@ func collect() {
 		case 200:
 		default:
 			{
-				log.Printf("HTTPResponseCode=%d fetching latest measurements", dr.HTTPResponseCode)
+				log.Printf("HTTPResponseCode=%d fetching latest measurements", ar.HTTPResponseCode)
 				return
 			}
 		}
 
-		for label, value := range ar.RecordFields[0] {
-			floatValue, ok := value.(float64)
-			if !ok {
-				continue
-			}
+		if len(ar.RecordFields) > 0 {
+			for label, value := range ar.RecordFields[0] {
+				floatValue, ok := value.(float64)
+				if !ok {
+					continue
+				}
 
-			homemetrics.SendCarbon([]string{"ambient", label, homemetrics.CleanLabel(dr.DeviceRecord[z].Info.Location)}, floatValue, time.Now())
+				homemetrics.SendCarbon([]string{"ambient", label, homemetrics.CleanLabel(dr.DeviceRecord[z].Info.Location)}, floatValue, time.Now())
+			}
 		}
 	}
 }
